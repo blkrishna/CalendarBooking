@@ -81,10 +81,19 @@ namespace AppointmentScheduler
                 return;
             }
 
+            var existingAppointment = await _context.Appointments
+                .FirstOrDefaultAsync(a => a.Date == date && a.Time == time);
+
+            if (existingAppointment != null)
+            {
+                Console.WriteLine("Appointment already exists at this date and time.");
+                return;
+            }
+
             var appointment = new Appointment { Date = date, Time = time };
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
-            Console.WriteLine("Appointment added.");
+            Console.WriteLine("Appointment added successfully.");
         }
 
         public async Task DeleteAppointment(DateTime date, TimeSpan time)
@@ -94,7 +103,7 @@ namespace AppointmentScheduler
             {
                 _context.Appointments.Remove(appointment);
                 await _context.SaveChangesAsync();
-                Console.WriteLine("Appointment deleted.");
+                Console.WriteLine("Appointment deleted successfully.");
             }
             else
             {
