@@ -21,7 +21,7 @@ The Appointment Scheduler is a simple console application built using C# and .NE
 
 ## Technologies Used
 
-- **.NET 6**
+- **.NET 8**
 - **Entity Framework Core**
 - **SQL Server Express LocalDB**
 - **Dependency Injection**
@@ -31,15 +31,33 @@ The Appointment Scheduler is a simple console application built using C# and .NE
 
 ### Prerequisites
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/download)
+- .NET SDK
 - SQL Server Express LocalDB
+
+- Update the database connection string in `Program.cs` if necessary. This configuration is typically found in the `CreateHostBuilder` method within `Program.cs`:
+    ```csharp
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureServices((context, services) =>
+            {
+                services.AddDbContext<AppointmentContext>(options =>
+                    options.UseSqlServer("Data Source=.\\SQLEXPRESS01;Initial Catalog=AppointmentSchedulerDB;Integrated Security=True;TrustServerCertificate=True;"));
+                services.AddTransient<Application>();
+            })
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole();
+                logging.SetMinimumLevel(LogLevel.Warning);
+            });
+    ```
 
 ### Running the Application
 
 1. Clone the repository:
 
     ```bash
-    git clone <repository-url>
+    git clone <https://github.com/blkrishna/CalendarBooking.git>
     cd AppointmentScheduler
     ```
 
@@ -90,9 +108,14 @@ The Appointment Scheduler is a simple console application built using C# and .NE
 - **Program.cs**: Sets up the DI container and configures services.
 - **Application.cs**: Contains the main logic for handling commands.
 - **Data/AppointmentContext.cs**: Defines the database context and the `Appointment` entity.
+- - `AppointmentScheduler/`: Contains the main application code.
+- `AppointmentScheduler.Tests/`: Contains the unit tests for the application.
+- `AppointmentScheduler.Data/`: Contains the data context and model definitions.
 
 ## Dependency Injection
 
+The project uses dependency injection to manage dependencies, specifically the database context and the main application class. 
+This is set up in the `Program.cs` file using the `HostBuilder`.
 The `Program.cs` file sets up Dependency Injection using `IHostBuilder` and `ConfigureServices`:
 
 ```csharp
@@ -103,3 +126,24 @@ public static IHostBuilder CreateHostBuilder(string[] args) =>
                 options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=AppointmentSchedulerDB;Trusted_Connection=True;"))
             .AddTransient<Application>());
 
+## Unit Testing
+
+Unit tests are written using the xUnit framework and can be found in the `AppointmentScheduler.Tests` project. 
+The tests cover the main functionalities of adding, deleting, finding, and keeping appointments.
+
+To run the tests:
+```bash
+dotnet test
+
+ ## Areas of improvement
+
+While the current implementation meets the basic requirements, below mentioned are few possible areas for potential improvement:
+
+- Error Handling: Enhance error handling to cover more edge cases and provide more informative error messages.
+- Validation: Add more thorough input validation to ensure that all commands and parameters are correctly formatted and within valid ranges.
+- Configuration: Externalize the configuration settings, such as database connection strings, to a configuration file or environment variables.
+- Logging: Improve logging by integrating a more robust logging framework and allowing for different log levels and outputs.
+- Scalability: Refactor the application to handle larger data sets and concurrent operations more efficiently.
+- User Interface: Develop a graphical user interface (GUI) or a web interface to improve user experience.
+- Scheduling Conflicts: Implement more advanced conflict resolution strategies for scheduling appointments, 
+                        such as notifying users of conflicts and suggesting alternative times.
