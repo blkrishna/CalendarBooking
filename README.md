@@ -34,23 +34,7 @@ The Appointment Scheduler is a simple console application built using C# and .NE
 - .NET SDK
 - SQL Server Express LocalDB
 
-- Update the database connection string in `Program.cs` if necessary. This configuration is typically found in the `CreateHostBuilder` method within `Program.cs`:
-    ```csharp
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureServices((context, services) =>
-            {
-                services.AddDbContext<AppointmentContext>(options =>
-                    options.UseSqlServer("Data Source=.\\SQLEXPRESS01;Initial Catalog=AppointmentSchedulerDB;Integrated Security=True;TrustServerCertificate=True;"));
-                services.AddTransient<Application>();
-            })
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders();
-                logging.AddConsole();
-                logging.SetMinimumLevel(LogLevel.Warning);
-            });
-    ```
+- Update the database connection string in `Program.cs` if necessary. This configuration defined in the `CreateHostBuilder` method within `Program.cs`
 
 ### Running the Application
 
